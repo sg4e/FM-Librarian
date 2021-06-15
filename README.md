@@ -14,7 +14,7 @@ The simplest way of using FM Librarian (on Windows):
 
 **Note:** You **must** open the in-game "Library" menu and then save each time you want to use your memory card with this program. FM is lazy about keeping the library up-to-date, and does not update all your obtained cards, rituals, and fusions in the library until you open the "Library" menu. Your emulator may not flush the save data to the file until you close the ROM.
 
-##Tested memory card formats
+## Tested memory card formats
 * Raw memory card dump
 * Bizhawk (`.SAVERAM`)
 
