@@ -23,6 +23,8 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define LIBRARY_BYTE_SIZE 91
 #define MEMCARD_BLOCK_SIZE 0x2000
@@ -30,7 +32,7 @@
 #define OFFSET MEMCARD_BLOCK_SIZE + FRAME_OFFSET
 #define MIN_MEMCARD_SIZE 128 * 1024
 
-void print_help();
+void print_help(char *);
 
 int main (int argc, char **argv) {
     FILE *fp;
