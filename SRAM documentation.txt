@@ -1,0 +1,9 @@
+A bitmap is stored at 801D063C. This corresponds to 2CBC in the memcard if the FM data is the 1st block of the memcard, else (0x2000 * block_number) + 0xCBC where block_number is the nth block on the card (starting at n = 1).
+
+When using the RAM, the little end of the word corresponds to the first slot in the library. When using the memcard data, the big end of the word corresponds to the first slot of the library. The order of the words themselves is the same.
+
+For each word (4 bytes) in the bitmap, for each byte in the word starting at the correct side of the word, decode the byte to a binary representation. 1 indicates the card exists in the libary; 0 indicates it does not. Continue for all 722 slots in the library.
+
+Discard the 1st (high) bit of the first byte (from the correct side of the word). The 2nd bit corresonds to Blue-Eyes White Dragon, 3rd to Mystical Elf, and so on.
+
+NB: The game is lazy with keeping the library updated in memory. You must load the Library screen, and then save after, to have your current library properly written to the memory card.

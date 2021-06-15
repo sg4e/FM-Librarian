@@ -1,0 +1,8 @@
+*.obj
+*.exe
+cards.txt
+
+# memory card image files
+*.SAVERAM
+*.mcr
+*.gme
