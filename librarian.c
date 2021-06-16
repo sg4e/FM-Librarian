@@ -85,7 +85,10 @@ int main (int argc, char **argv) {
     }
     rewind(fp);
     fseek(fp, offset, SEEK_SET);
-    fread(buf, LIBRARY_BYTE_SIZE, 1, fp);
+    size_t count_read = fread(buf, LIBRARY_BYTE_SIZE, 1, fp);
+    if(count_read != 1) {
+        printf("Unexpected number of elements in file stream. Results may be inaccurate.");
+    }
     fclose(fp);
 
     fout = fopen(textfile_path,"w");
