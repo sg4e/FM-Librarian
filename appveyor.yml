@@ -28,6 +28,7 @@ artifacts:
 
 deploy:
   release: $APPVEYOR_REPO_TAG_NAME
+  description: "The Windows release is a ZIP file containing the executable and a batch file to simplify its usage. The non-Windows releases are just the binary executable file to be run from the terminal. The Linux release is built on Ubuntu but should work on most Linuxes."
   auth_token:
     secure: DlM2I0MGgU7nN5IsxRNDlssXf2C1vM7b2dil09+e6dAmrBk3UajqBVahi1TVaZYB
   provider: GitHub
