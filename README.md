@@ -4,6 +4,9 @@ A program that reads PS1 memory card images that contain *Yu-Gi-Oh! Forbidden Me
 
 By sg4e.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/u34atpv4g7rcliin/branch/master?svg=true)](https://ci.appveyor.com/project/sg4e/fm-librarian/branch/master)
+Releases built for Windows, Linux, and MacOS. Code works on any platform with a C compiler.
+
 ## Usage
 The simplest way of using FM Librarian (on Windows):
 1. Download the latest release
