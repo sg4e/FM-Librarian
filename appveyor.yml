@@ -1,0 +1,38 @@
+image:
+  - Visual Studio 2015
+  - Ubuntu
+  - macOS
+
+for:
+  -
+    matrix:
+      only:
+        - image: Visual Studio 2015
+
+    build_script:
+    - cmd: set PATH=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin;%PATH%
+    - cmd: gcc -O2 -Wall -o librarian librarian.c
+    - cmd: mkdir artifacts
+    - cmd: 7z a artifacts\FM-Librarian-windows.zip librarian.exe LICENSE.txt run.bat
+  -
+    matrix:
+      except:
+        - image: Visual Studio 2015
+
+    build_script:
+    - mkdir artifacts
+    - gcc -O2 -Wall -o artifacts/librarian-$APPVEYOR_BUILD_WORKER_IMAGE librarian.c
+
+artifacts:
+  - path: artifacts\*
+
+deploy:
+  release: $APPVEYOR_REPO_TAG_NAME
+  auth_token:
+    secure: DlM2I0MGgU7nN5IsxRNDlssXf2C1vM7b2dil09+e6dAmrBk3UajqBVahi1TVaZYB
+  provider: GitHub
+  draft: false
+  prerelease: false
+  on:
+    APPVEYOR_REPO_TAG: true
+    branch: master
