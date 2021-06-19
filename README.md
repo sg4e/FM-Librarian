@@ -1,6 +1,6 @@
 # FM Librarian
 
-A program that reads PS1 memory card images that contain *Yu-Gi-Oh! Forbidden Memories* save data and prints a list of obtained cards in the Library.
+A program that reads PS1 memory card images that contain *Yu-Gi-Oh! Forbidden Memories* save data and prints a list of obtained cards in the Library. All cards in the Library are included: owned, fusion-summoned, and ritual-summoned. The ideal way to track a Forbidden Memories 100% playthrough!
 
 By sg4e.
 
@@ -22,7 +22,7 @@ The simplest way of using FM Librarian (on Windows):
 * Raw memory card dump
 * Bizhawk (`.SAVERAM`)
 
-FM Librarian should work with any emulator that accurately saves memory card data. If your memory card image is exactly 128KB, it will likely work. FM Librarian expects that the first block of the memory card contains the FM data, but you can specify an alternative block on the command line.
+FM Librarian should work with any emulator that accurately saves memory card data. If your memory card image is exactly 128KB, it will likely work. Some Bizhawk versions create 256KB card images, which are also supported. FM Librarian expects that the first block of the memory card contains the FM data, but you can specify an alternative block on the command line.
 
 ## Command-line usage
 ```

@@ -31,6 +31,7 @@
 #define FRAME_OFFSET 0xCBC
 #define OFFSET MEMCARD_BLOCK_SIZE + FRAME_OFFSET
 #define MIN_MEMCARD_SIZE 128 * 1024
+#define LARGE_MEMCARD_SIZE 256 * 1024
 
 void print_help(char *);
 
@@ -75,19 +76,19 @@ int main (int argc, char **argv) {
     fseek(fp, 0L, SEEK_END);
     int size = ftell(fp);
     if(size < MIN_MEMCARD_SIZE) {
-        printf("Memory card image is too small. Memory cards must be 128kb.");
+        printf("Memory card image is too small. Memory cards must be at least 128kb.");
         fclose(fp);
         return 0;
     }
-    if(size > MIN_MEMCARD_SIZE) {
-        printf("Memory card image is larger than expected. Memory cards should be 128kb. "
-        "Results may be inaccurate.");
+    if(size != MIN_MEMCARD_SIZE && size != LARGE_MEMCARD_SIZE) {
+        printf("Memory card image size is not an expected value. Memory cards should be 128kb or 256kb. "
+        "Results may be inaccurate.\n");
     }
     rewind(fp);
     fseek(fp, offset, SEEK_SET);
     size_t count_read = fread(buf, LIBRARY_BYTE_SIZE, 1, fp);
     if(count_read != 1) {
-        printf("Unexpected number of elements in file stream. Results may be inaccurate.");
+        printf("Unexpected number of elements in file stream. Results may be inaccurate.\n");
     }
     fclose(fp);
 
