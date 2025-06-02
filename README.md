@@ -1,5 +1,7 @@
 # FM Librarian
 
+**Now available as an in-browser utility:** [https://sg4e.github.io/FM-Librarian/]()
+
 A program that reads PS1 memory card images that contain *Yu-Gi-Oh! Forbidden Memories* save data and prints a list of obtained cards in the Library. All cards in the Library are included: owned, fusion-summoned, and ritual-summoned. The ideal way to track a Forbidden Memories 100% playthrough!
 
 By sg4e.

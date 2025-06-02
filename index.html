@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<!--
+ * MIT License
+ *
+ * Copyright (c) 2025 sg4e
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ -->
+<head>
+    <title>FM Librarian</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { margin-bottom: 20px; }
+        textarea { width: 100%; height: 100px; }
+        #output { white-space: pre; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>FM Librarian</h1>
+
+    <div class="container">
+        <h2>Options</h2>
+        <label>
+            Block Number (1-15):
+            <input type="number" id="blockNumber" min="1" max="15" value="1">
+        </label>
+    </div>
+
+    <div class="container">
+        <h2>Memory Card File</h2>
+        <input type="file" id="memcardFile">
+    </div>
+
+    <div class="container">
+        <button id="processBtn">Process Memory Card</button>
+    </div>
+
+    <div class="container">
+        <h2>Output</h2>
+        <div id="output"></div>
+        <button id="downloadBtn" disabled>Download Results</button>
+    </div>
+
+    <script>
+        const LIBRARY_BYTE_SIZE = 91;
+        const MEMCARD_BLOCK_SIZE = 0x2000;
+        const FRAME_OFFSET = 0xCBC;
+        const MIN_MEMCARD_SIZE = 128 * 1024;
+        const LARGE_MEMCARD_SIZE = 256 * 1024;
+
+        document.getElementById('processBtn').addEventListener('click', processMemoryCard);
+        document.getElementById('downloadBtn').addEventListener('click', downloadResults);
+
+        let resultText = '';
+
+        function processMemoryCard() {
+            const fileInput = document.getElementById('memcardFile');
+            const blockNumber = parseInt(document.getElementById('blockNumber').value);
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please select a memory card file');
+                return;
+            }
+
+            if (blockNumber < 1 || blockNumber > 15) {
+                alert('Invalid block number. Must be between 1 and 15.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const arrayBuffer = e.target.result;
+                    const uint8Array = new Uint8Array(arrayBuffer);
+
+                    // Validate file size
+                    if (uint8Array.length < MIN_MEMCARD_SIZE) {
+                        alert('Memory card image is too small. Memory cards must be at least 128kb.');
+                        return;
+                    }
+
+                    if (uint8Array.length !== MIN_MEMCARD_SIZE && uint8Array.length !== LARGE_MEMCARD_SIZE) {
+                        alert('Memory card image size is not an expected value. Memory cards should be 128kb or 256kb. Results may be inaccurate.');
+                    }
+
+                    // Calculate offset
+                    const offset = (MEMCARD_BLOCK_SIZE * blockNumber) + FRAME_OFFSET;
+
+                    // Check if offset is within bounds
+                    if (offset + LIBRARY_BYTE_SIZE > uint8Array.length) {
+                        alert('The selected block is beyond the memory card image size.');
+                        return;
+                    }
+
+                    // Extract the relevant bytes
+                    const buf = uint8Array.slice(offset, offset + LIBRARY_BYTE_SIZE);
+
+                    // Process the bytes
+                    let card = 1;
+                    let total = 0;
+                    resultText = '';
+
+                    for (let index = 0; index < buf.length; index++) {
+                        const bitfield = buf[index];
+                        for (let bit = 1; bit <= 8; bit++) {
+                            if (card === 1) { // the top bits of the 1st library byte are ignored
+                                bit++;
+                            }
+                            if ((bitfield >> (8 - bit)) & 0x01) {
+                                resultText += card + '\n';
+                                total++;
+                            }
+                            card++;
+                        }
+                    }
+
+                    document.getElementById('output').textContent = `Total cards: ${total}\n\nCard list:\n${resultText}`;
+                    document.getElementById('downloadBtn').disabled = false;
+
+                } catch (error) {
+                    alert('Error processing file: ' + error.message);
+                    console.error(error);
+                }
+            };
+
+            reader.onerror = function() {
+                alert('Error reading file');
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function downloadResults() {
+            if (!resultText) return;
+
+            const blob = new Blob([resultText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'card_list.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
